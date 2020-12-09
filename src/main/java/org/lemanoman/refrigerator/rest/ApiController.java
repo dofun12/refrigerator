@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
 @RestController
@@ -44,6 +45,12 @@ public class ApiController {
     @GetMapping("list/{applicationName}")
     public ApplicationJS listApplications(@PathVariable(name = "applicationName") String applicationName) throws IOException {
         return storeService.listByAppShortName(applicationName);
+    }
+
+
+    @GetMapping("list")
+    public List<ApplicationJS> listApplications() throws IOException {
+        return storeService.listAll();
     }
 
     @GetMapping("download/{applicationName}/latest")

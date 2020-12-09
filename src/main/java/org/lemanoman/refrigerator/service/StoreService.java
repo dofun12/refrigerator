@@ -46,15 +46,14 @@ public class StoreService {
                 .toUriString();
     }
 
-    public ApplicationJS listByAppShortName(String shortName){
-        ApplicationModel applicationModel = applicationRepository.getByShortname(shortName);
+    private ApplicationJS getApplicationJS(ApplicationModel applicationModel){
         List<VersionModel> versions = versionRepository.findAllByApplicationId(applicationModel.getId());
 
         List<VersionJS> versionJSList = versions.stream().map(versionModel -> {
             VersionJS versionJS = new VersionJS();
             versionJS.setDateAdded(versionModel.getDateAdded().toString());
             versionJS.setVersionId(versionModel.getVersionId());
-            versionJS.setDownloadUrl(getDownloadUrl(shortName,versionModel.getVersionId()));
+            versionJS.setDownloadUrl(getDownloadUrl(applicationModel.getShortname(),versionModel.getVersionId()));
             return versionJS;
         }).collect(Collectors.toList());
 
@@ -65,6 +64,15 @@ public class StoreService {
         applicationJS.setVersions(versionJSList);
 
         return applicationJS;
+    }
+
+    public List<ApplicationJS> listAll(){
+        List<ApplicationModel> applicationModelList = applicationRepository.findAll();
+        return applicationModelList.stream().map(this::getApplicationJS).collect(Collectors.toList());
+    }
+
+    public ApplicationJS listByAppShortName(String shortName){
+        return getApplicationJS(applicationRepository.getByShortname(shortName));
     }
 
     public File getArtifactByVersion(String appShortname,String versionId){
