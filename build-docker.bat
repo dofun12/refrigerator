@@ -1,0 +1,1 @@
+docker build -t refrigerator/refrigerator . -f docker/Dockerfile

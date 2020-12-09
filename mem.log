@@ -1,0 +1,31 @@
+/*C12*/SET SCHEMA PUBLIC
+drop table if exists application CASCADE 
+drop table if exists version CASCADE 
+drop sequence hibernate_sequence if exists
+create sequence hibernate_sequence start with 1 increment by 1
+create table application (id integer not null, date_added timestamp, last_version varchar(255), name varchar(255), shortname varchar(255), primary key (id))
+create table version (id integer not null, application_id integer not null, date_added timestamp, path varchar(255), version_id varchar(255), primary key (id))
+alter table application add constraint UK_6ogv7qobsipvvhkhtujipitnm unique (shortname)
+alter table version add constraint UK_2rr10dn8cp1xl72qtro7hsrc1 unique (version_id)
+drop table if exists application CASCADE 
+drop table if exists version CASCADE 
+drop sequence hibernate_sequence if exists
+DISCONNECT
+/*C13*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C14*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C15*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C16*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C17*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C18*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C19*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C20*/SET SCHEMA PUBLIC
+DISCONNECT
+/*C21*/SET SCHEMA PUBLIC
+DISCONNECT
