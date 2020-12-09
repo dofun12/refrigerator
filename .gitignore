@@ -19,6 +19,8 @@ target/
 *.iml
 *.ipr
 
+spring-boot-jpa.*
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
