@@ -1,5 +1,6 @@
 package org.lemanoman.refrigerator.rest;
 
+import org.lemanoman.refrigerator.dto.ApplicationJS;
 import org.lemanoman.refrigerator.dto.ApplicationMetadata;
 import org.lemanoman.refrigerator.dto.VersionMetadata;
 import org.lemanoman.refrigerator.model.VersionModel;
@@ -40,10 +41,9 @@ public class ApiController {
         return null;
     }
 
-    @GetMapping("list/")
-    public HttpEntity<ApplicationMetadata> listApplications() throws IOException {
-
-        return null;
+    @GetMapping("list/{applicationName}")
+    public ApplicationJS listApplications(@PathVariable(name = "applicationName") String applicationName) throws IOException {
+        return storeService.listByAppShortName(applicationName);
     }
 
     @GetMapping("download/{applicationName}/latest")

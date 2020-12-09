@@ -3,9 +3,7 @@ package org.lemanoman.refrigerator.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.lemanoman.refrigerator.ConfigProperties;
-import org.lemanoman.refrigerator.dto.ApplicationMetadata;
-import org.lemanoman.refrigerator.dto.TargetDirs;
-import org.lemanoman.refrigerator.dto.VersionMetadata;
+import org.lemanoman.refrigerator.dto.*;
 import org.lemanoman.refrigerator.model.ApplicationModel;
 import org.lemanoman.refrigerator.model.VersionModel;
 import org.lemanoman.refrigerator.repository.ApplicationRepository;
@@ -13,6 +11,7 @@ import org.lemanoman.refrigerator.repository.VersionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -36,6 +35,37 @@ public class StoreService {
         this.configProperties = configProperties;
     }
 
+    private String getDownloadUrl(String shortname,String versionName){
+        return ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("refrigerator/")
+                .path("api/")
+                .path("download/")
+                .path(shortname)
+                .path("/")
+                .path(versionName)
+                .toUriString();
+    }
+
+    public ApplicationJS listByAppShortName(String shortName){
+        ApplicationModel applicationModel = applicationRepository.getByShortname(shortName);
+        List<VersionModel> versions = versionRepository.findAllByApplicationId(applicationModel.getId());
+
+        List<VersionJS> versionJSList = versions.stream().map(versionModel -> {
+            VersionJS versionJS = new VersionJS();
+            versionJS.setDateAdded(versionModel.getDateAdded().toString());
+            versionJS.setVersionId(versionModel.getVersionId());
+            versionJS.setDownloadUrl(getDownloadUrl(shortName,versionModel.getVersionId()));
+            return versionJS;
+        }).collect(Collectors.toList());
+
+
+        ApplicationJS applicationJS = new ApplicationJS();
+        applicationJS.setAppShortName(applicationModel.getShortname());
+        applicationJS.setLatestVersion(applicationModel.getLastVersion());
+        applicationJS.setVersions(versionJSList);
+
+        return applicationJS;
+    }
 
     public File getArtifactByVersion(String appShortname,String versionId){
         ApplicationModel applicationModel = applicationRepository.getByShortname(appShortname);
